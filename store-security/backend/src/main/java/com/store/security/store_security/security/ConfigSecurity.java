@@ -103,7 +103,7 @@ public class ConfigSecurity {
                         .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
         );
 
-       // http.requiresChannel(channel->channel.anyRequest().requiresSecure());
+        http.requiresChannel(channel->channel.anyRequest().requiresSecure());
         //authentication
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(httpbasic->httpbasic.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));

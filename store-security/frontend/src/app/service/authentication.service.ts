@@ -5,6 +5,8 @@ import { environment } from '../../environments/environment';
 import { UserDto } from '../model/UserDto'
 import { URL } from '../constant/url.constants';
 import { SessionStorageService } from './session-storage.service';
+import { LoginUserJwt } from '../model/LoginUserJwt';
+import { LoginUser } from '../model/LoginUser';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +15,12 @@ export class AuthenticationService {
 
   urlBase = environment.apiBaseUrl;
 
-  constructor(private http:HttpClient,private sessioneStorageAuth:SessionStorageService) { }
+  constructor(private http:HttpClient) { }
 
 
-  authentication(user:UserDto)
+  authentication(user:LoginUser):Observable<LoginUserJwt>
   {
-    this.sessioneStorageAuth.login(user);
-    return this.http.get(this.urlBase + URL.AUTH,{observe:'response',withCredentials:true});
+    return this.http.post<LoginUserJwt>(this.urlBase + URL.AUTH,user);
   }
 
   registration(user:UserDto):Observable<UserDto>
@@ -28,12 +29,7 @@ export class AuthenticationService {
   }
 
   getUser():Observable<UserDto>
-  {
-    return this.http.get<UserDto>(`${this.urlBase}${URL.AUTH}`,{withCredentials:true});
-  }
-
-  expired()
-  {
-    return this.http.post(`${this.urlBase}${URL.SESSIONEXPIRED}`,{},{withCredentials:true});  
+  {   
+    return this.http.get<UserDto>(`${this.urlBase}${URL.USER}`);
   }
 }

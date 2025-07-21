@@ -1,8 +1,6 @@
 package com.store.security.store_security.security;
 
 import com.store.security.store_security.exceptionhandle.CustomAccessDeniedHandler;
-import com.store.security.store_security.exceptionhandle.CustomAuthenticationEntryPoint;
-import com.store.security.store_security.filter.CsrfCustomFilter;
 import com.store.security.store_security.filter.JwtValidatorFilter;
 import com.store.security.store_security.properties.StoreProperties;
 import com.store.security.store_security.provider.UserProviderDetailsManager;
@@ -26,8 +24,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -49,11 +45,7 @@ public class ConfigSecurity {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
-        csrfTokenRequestAttributeHandler.setCsrfRequestAttributeName("_csrf");
-        http.csrf(csrf->csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                .ignoringRequestMatchers("/api/auth/registration","/h2-console/**","/api/auth/logout")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/article/addArticle",
@@ -65,12 +57,11 @@ public class ConfigSecurity {
                                 .requestMatchers("/api/user/{username}",
                                         "/api/user/{id}",
                                         "/api/v1/stock",
-                                        "/api/v1/stock/**").hasAnyRole("USER","ADMIN")
+                                        "/api/v1/stock/**","/api/auth/user").hasAnyRole("USER","ADMIN")
                                 .requestMatchers(
                                         "/api/user").hasAnyRole("ADMIN","TRACK")
                                 .requestMatchers(
                                         "/api/v1/track/{idOrder}","/api/orders","/api/orders/{username}").hasAnyRole("USER","ADMIN","TRACK")
-                                .requestMatchers("/api/auth/user").authenticated()
                                 .requestMatchers("/api/auth/registration",
                                        "/v3/api-docs",
                                        "/h2-console/**",
@@ -81,7 +72,6 @@ public class ConfigSecurity {
                                         "/api/auth/logout"
                                        ).permitAll());
         //set custom filter
-        http.addFilterAfter(new CsrfCustomFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(new JwtValidatorFilter(storeProperties),BasicAuthenticationFilter.class);
 
 

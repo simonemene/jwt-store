@@ -32,7 +32,9 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.sessionStorageAuth.isAuthenticated()) {
-      this.username = this.sessionStorageAuth.getUser()!;
+      let jwt = window.sessionStorage.getItem('Authorization');
+      this.username.username = this.sessionStorageAuth.getUsernameJwt();
+      this.username.authoritiesList = this.sessionStorageAuth.getAuthoritiesJwt();
     }
   }
 
@@ -47,4 +49,6 @@ export class WelcomeComponent implements OnInit {
   isTrack(): boolean {
     return this.username.authoritiesList.includes(ROLE.TRACK);
   }
+
+
 }

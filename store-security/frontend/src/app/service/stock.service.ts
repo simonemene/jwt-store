@@ -17,7 +17,7 @@ export class StockService {
   constructor(private http: HttpClient) { }
 
   allArticleInStock(): Observable<StockDto[]> {
-    return this.http.get<AllStockDto>(this.urlBase + URL.ALLSTOCK, { withCredentials: true })
+    return this.http.get<AllStockDto>(this.urlBase + URL.ALLSTOCK)
       .pipe(
         map(
           allStock => {
@@ -28,7 +28,7 @@ export class StockService {
   }
 
   allArticleInStockWithQuantity(): Observable<StockArticleDto[]> {
-    return this.http.get<StockDto>(this.urlBase + URL.ALLSTOCK, { withCredentials: true })
+    return this.http.get<StockDto>(this.urlBase + URL.ALLSTOCK)
       .pipe(
         map(
           allStock => {
@@ -40,11 +40,11 @@ export class StockService {
 
   addQuantityArticle(id: number) {
     let add = 1;
-    return this.http.patch<AllStockDto>(`${this.urlBase}${URL.ALLSTOCK}/${id}/${add}`, null,{ withCredentials: true }); 
+    return this.http.patch<AllStockDto>(`${this.urlBase}${URL.ALLSTOCK}/${id}/${add}`, null); 
   }
 
   minusQuantityArticle(id: number) { 
     let minus = 1;
-    return this.http.patch<AllStockDto>(`${this.urlBase}${URL.ALLSTOCK}/${id}/decrement/${minus}`,null, { withCredentials: true }); 
+    return this.http.patch<AllStockDto>(`${this.urlBase}${URL.ALLSTOCK}/${id}/decrement/${minus}`,null); 
   }
 }

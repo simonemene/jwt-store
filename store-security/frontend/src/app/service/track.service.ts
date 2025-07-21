@@ -15,16 +15,14 @@ export class TrackService {
 
   getTrack(idOrder: number) {
     return this.http.get<TrackDto>(
-      `${this.urlBase}${URL.ALLTRACKBYID}/${idOrder}`,
-      { withCredentials: true }
+      `${this.urlBase}${URL.ALLTRACKBYID}/${idOrder}`
     );
   }
 
   setTrack(idOrder: number, track: TrackDto) {
     return this.http.put<TrackDto>(
       `${this.urlBase}${URL.ALLTRACKBYID}/${idOrder}`,
-      track,
-      { withCredentials: true }
+      track
     );
   }
 }

@@ -6,6 +6,7 @@ import { Route, Router, RouterModule } from '@angular/router';
 import { SessionStorageService } from '../../service/session-storage.service';
 import { getCookie } from 'typescript-cookie';
 import { AlertComponent } from '../../shared/component/alert/alert.component';
+import { LoginUserJwt } from '../../model/LoginUserJwt';
 
 @Component({
   selector: 'app-login',
@@ -40,14 +41,13 @@ export class LoginComponent {
 
     this.auth.authentication(this.user).subscribe(
       {
-        next:(responseData)=>
+        next:(responseData:LoginUserJwt)=>
         {
+          console.log(responseData);
+          
           this.errorAuthentication=false;
-          window.sessionStorage.setItem('Authorization',responseData.headers.get('Authorization')!);
-          this.user = <any> responseData.body;
-          let csrf = getCookie("XSRF-TOKEN")!;          
-          window.sessionStorage.setItem("XSRF-TOKEN",csrf);
-          this.sessionStorageAuth.login(this.user);
+          window.sessionStorage.setItem('Authorization',responseData.jwt);
+          this.sessionStorageAuth.login();
           this.router.navigate(['/welcome']);
         },
         error:(err)=>

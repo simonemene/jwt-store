@@ -39,18 +39,18 @@ export class UserService {
 
   allUser():Observable<AllUserDto>
   {
-    return this.http.get<AllUserDto>(this.baseUrl + URL.ALLUSER,{withCredentials:true});
+    return this.http.get<AllUserDto>(this.baseUrl + URL.ALLUSER);
   }
 
   getProfile(id:number):Observable<UserDto>
   {
     let params = new HttpParams();
     params.append("id",id);
-    return this.http.get<UserDto>(`${this.baseUrl}${URL.ALLUSER}/${id}`,{params,withCredentials:true});
+    return this.http.get<UserDto>(`${this.baseUrl}${URL.ALLUSER}/${id}`,{params});
   }
 
   updateProfile(id:number,user:UserDto)
   {
-    return this.http.put<UserDto>(`${this.baseUrl}${URL.ALLUSER}/${id}`,user,{withCredentials:true});
+    return this.http.put<UserDto>(`${this.baseUrl}${URL.ALLUSER}/${id}`,user);
   }
 }

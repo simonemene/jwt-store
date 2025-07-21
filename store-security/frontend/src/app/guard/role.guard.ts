@@ -4,14 +4,14 @@ import { SessionStorageService } from '../service/session-storage.service';
 
 export const roleGuard: CanActivateFn = (route, state) => {
   const authorization = inject(SessionStorageService);
-  const user = authorization.getUser();
+  const auth = authorization.getAuthoritiesJwt();
   const allowRoles = route.data['roles'] as string[];
 
   let verify=false;
 
-  if(user && allowRoles)
+  if(auth && allowRoles)
   {
-    verify = allowRoles.some(role=>user.authoritiesList.includes(role));
+    verify = allowRoles.some(role=>auth.includes(role));
   }
   return verify;
 

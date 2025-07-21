@@ -16,12 +16,14 @@ export class OrderService {
 
   getAllOrderUser(id:number)
   {
-     return this.http.get<AllOrderDto>(`${this.urlBase}${URL.ALLORDER}/${id}`,{withCredentials:true});
+     return this.http.get<AllOrderDto>(`${this.urlBase}${URL.ALLORDER}/${id}`);
   }
 
   order(articles:ArticlesOrderDto)
   {
-    return this.http.post<ArticlesOrderDto>(`${this.urlBase}${URL.ALLORDER}`,articles,{withCredentials:true})
+    console.log(articles);
+    
+    return this.http.post<ArticlesOrderDto>(`${this.urlBase}${URL.ALLORDER}`,articles)
   }
 
 

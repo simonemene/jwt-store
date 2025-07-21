@@ -8,29 +8,16 @@ import { AuthenticationService } from '../../service/authentication.service';
   standalone: true,
   imports: [],
   templateUrl: './logout.component.html',
-  styleUrl: './logout.component.scss'
+  styleUrl: './logout.component.scss',
 })
 export class LogoutComponent {
-
   router = inject(Router);
   sessionsStorageAuth = inject(SessionStorageService);
   authService = inject(AuthenticationService);
 
-  constructor()
-  {
-     
-     this.authService.expired().subscribe(
-      {
-        next:(expired:any)=>
-        {
-          window.sessionStorage.setItem('Authorization',"");
-          window.sessionStorage.clear();
-          this.sessionsStorageAuth.logout();
-        },
-        error:err=>console.error(err)
-      }
-     )
-     
+  constructor() {
+    window.sessionStorage.setItem('Authorization', '');
+    window.sessionStorage.clear();
+    this.sessionsStorageAuth.logout();
   }
-
 }

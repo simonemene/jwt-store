@@ -3,13 +3,11 @@ package com.store.security.store_security.security;
 import com.store.security.store_security.exceptionhandle.CustomAccessDeniedHandler;
 import com.store.security.store_security.exceptionhandle.CustomAuthenticationEntryPoint;
 import com.store.security.store_security.filter.CsrfCustomFilter;
-import com.store.security.store_security.filter.JwtGeneratorFilter;
 import com.store.security.store_security.filter.JwtValidatorFilter;
 import com.store.security.store_security.properties.StoreProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -80,7 +78,6 @@ public class ConfigSecurityDev {
                                        ).permitAll());
         //set custom filter
         http.addFilterAfter(new CsrfCustomFilter(), BasicAuthenticationFilter.class);
-        http.addFilterAfter(new JwtGeneratorFilter(storeProperties),BasicAuthenticationFilter.class);
         http.addFilterBefore(new JwtValidatorFilter(storeProperties),BasicAuthenticationFilter.class);
         http.cors(cors->cors.configurationSource(
                 new CorsConfigurationSource() {

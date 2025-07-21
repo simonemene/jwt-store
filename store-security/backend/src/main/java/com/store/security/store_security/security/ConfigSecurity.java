@@ -3,17 +3,19 @@ package com.store.security.store_security.security;
 import com.store.security.store_security.exceptionhandle.CustomAccessDeniedHandler;
 import com.store.security.store_security.exceptionhandle.CustomAuthenticationEntryPoint;
 import com.store.security.store_security.filter.CsrfCustomFilter;
-import com.store.security.store_security.filter.JwtGeneratorFilter;
 import com.store.security.store_security.filter.JwtValidatorFilter;
 import com.store.security.store_security.properties.StoreProperties;
+import com.store.security.store_security.provider.UserProviderDetailsManager;
+import com.store.security.store_security.service.UserSecurityDetailService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -80,7 +82,6 @@ public class ConfigSecurity {
                                        ).permitAll());
         //set custom filter
         http.addFilterAfter(new CsrfCustomFilter(), BasicAuthenticationFilter.class);
-        http.addFilterAfter(new JwtGeneratorFilter(storeProperties),BasicAuthenticationFilter.class);
         http.addFilterBefore(new JwtValidatorFilter(storeProperties),BasicAuthenticationFilter.class);
 
 
@@ -141,6 +142,14 @@ public class ConfigSecurity {
         return new HttpSessionEventPublisher();
     }
 
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserSecurityDetailService userDetailsService,PasswordEncoder passwordEncoder)
+    {
+        UserProviderDetailsManager userProviderDetailsManager = new UserProviderDetailsManager(userDetailsService,passwordEncoder);
+        return new ProviderManager(userProviderDetailsManager);
+    }
 
 
 

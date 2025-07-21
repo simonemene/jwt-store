@@ -2,6 +2,7 @@ package com.store.security.store_security.controller;
 
 import com.store.security.store_security.dto.UserDto;
 import com.store.security.store_security.entity.AuthoritiesEntity;
+import com.store.security.store_security.properties.StoreProperties;
 import com.store.security.store_security.service.IRegistrationService;
 import com.store.security.store_security.service.IUserService;
 import org.assertj.core.api.Assertions;
@@ -13,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,12 +33,18 @@ public class AuthenticationControllerUnitTest {
 	@InjectMocks
 	private AuthenticationController authenticationController;
 
+	@Mock
+	private AuthenticationManager authenticationManager;
+
+	@Mock
+	private StoreProperties storeProperties;
+
 
 	@BeforeEach
 	public void init()
 	{
 		MockitoAnnotations.openMocks(this);
-		authenticationController = new AuthenticationController(registrationService,userService);
+		authenticationController = new AuthenticationController(registrationService,userService,authenticationManager,storeProperties);
 	}
 
 

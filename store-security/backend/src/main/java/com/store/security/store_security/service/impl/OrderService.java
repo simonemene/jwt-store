@@ -60,7 +60,6 @@ public class OrderService implements IOrderService {
 				throw new OrderException("INVALID QUANTITY");
 			}
 		}
-
 		for (int i = 0; i < articlesOrderDto.getArticles().size(); i++) {
 			ArticleEntity article = articleRepository.findByName(articlesOrderDto.getArticles().get(i).getArticleDto().getName());
 			if (article.getId() <= 0) {

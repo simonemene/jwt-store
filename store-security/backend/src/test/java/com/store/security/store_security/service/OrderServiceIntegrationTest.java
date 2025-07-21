@@ -191,8 +191,8 @@ public class OrderServiceIntegrationTest extends StoreSecurityApplicationTests {
 		ArticleDto article2 = ArticleDto.builder().name("table").tmstInsert(LocalDateTime.now())
 				.description("test1").price(new BigDecimal(15)).build();
 
-		articleRepository.save(articleMapper.toEntity(article1));
-		articleRepository.save(articleMapper.toEntity(article2));
+		ArticleEntity savedArticle1 = articleRepository.save(articleMapper.toEntity(article1));
+		ArticleEntity savedArticle2 = articleRepository.save(articleMapper.toEntity(article2));
 
 		List<AllArticleOrderDto> articlesOrder = new ArrayList<>();
 

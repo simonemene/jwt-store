@@ -7,6 +7,7 @@ import com.store.security.store_security.service.IOrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class OrderController {
 	)
 	@PreAuthorize("(#articlesOrderDto.username == authentication.name && hasRole('ROLE_USER')) || hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<ArticlesOrderDto> createOrder(@RequestBody ArticlesOrderDto articlesOrderDto)
+	public ResponseEntity<ArticlesOrderDto> createOrder(@Valid @RequestBody ArticlesOrderDto articlesOrderDto)
 			throws OrderException {
 		return ResponseEntity.status(HttpStatus.CREATED).body(orderService.orderArticles(articlesOrderDto));
 	}

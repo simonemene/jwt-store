@@ -55,7 +55,7 @@ public class OrderService implements IOrderService {
 
 		for(AllArticleOrderDto article : articlesOrderDto.getArticles())
 		{
-			if(null == article || null == article.getArticleDto() || null == article.getQuantity() ||  article.getQuantity() <= 0)
+			if(null == article || null == article.getArticleDto())
 			{
 				throw new OrderException("INVALID QUANTITY");
 			}

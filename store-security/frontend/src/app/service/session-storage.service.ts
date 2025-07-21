@@ -11,7 +11,7 @@ export class SessionStorageService {
 
   readonly isAuthenticated = computed(() => {
   const user = this.user();
-  return user != null && (user.password === undefined || user.password === '');
+  return user != null && (user.authorization ==='AUTH');
 });
 
 
@@ -36,6 +36,7 @@ export class SessionStorageService {
 
    login(user:UserDto)
    {    
+      user.authorization = 'AUTH';
       window.sessionStorage.setItem('user-details',JSON.stringify(user));
       this.user.set(user);
    }

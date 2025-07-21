@@ -1,5 +1,6 @@
 package com.store.security.store_security.service.impl;
 
+import com.store.security.store_security.annotation.LogExecutionTime;
 import com.store.security.store_security.dto.ArticleDto;
 import com.store.security.store_security.dto.StockArticleDto;
 import com.store.security.store_security.dto.StockDto;
@@ -70,6 +71,7 @@ public class StockService implements IStockService {
 		throw new StockException(String.format("[ARTICLE: %s] Stock not found",idArticle));
 	}
 
+	@LogExecutionTime
 	@Transactional
 	@Override
 	public ArticleDto loadArticle(ArticleDto articleDto) {

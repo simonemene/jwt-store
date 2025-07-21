@@ -3,7 +3,11 @@ package com.store.security.store_security.security;
 import com.store.security.store_security.exceptionhandle.CustomAccessDeniedHandler;
 import com.store.security.store_security.exceptionhandle.CustomAuthenticationEntryPoint;
 import com.store.security.store_security.filter.CsrfCustomFilter;
+import com.store.security.store_security.filter.JwtGeneratorFilter;
+import com.store.security.store_security.filter.JwtValidatorFilter;
+import com.store.security.store_security.properties.StoreProperties;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,18 +18,15 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -33,11 +34,11 @@ import java.util.List;
 
 @Slf4j
 @Configuration
+@AllArgsConstructor
 @Profile("prod")
 public class ConfigSecurity {
 
-    @Value("${store.security.allowed-origin}")
-    private String origin;
+    private final StoreProperties storeProperties;
 
     /**
      * Bean responsible for customizable Spring Security configurations
@@ -51,7 +52,7 @@ public class ConfigSecurity {
         http.csrf(csrf->csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
                 .ignoringRequestMatchers("/api/auth/registration","/h2-console/**","/api/auth/logout")
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
-        http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+        http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/article/addArticle",
                                         "/api/article/addArticle/**",
@@ -79,6 +80,8 @@ public class ConfigSecurity {
                                        ).permitAll());
         //set custom filter
         http.addFilterAfter(new CsrfCustomFilter(), BasicAuthenticationFilter.class);
+        http.addFilterAfter(new JwtGeneratorFilter(storeProperties),BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JwtValidatorFilter(storeProperties),BasicAuthenticationFilter.class);
 
 
         http.cors(cors->cors.configurationSource(
@@ -87,23 +90,24 @@ public class ConfigSecurity {
                     public CorsConfiguration getCorsConfiguration(
                             HttpServletRequest request) {
                         CorsConfiguration cors = new CorsConfiguration();
-                        cors.addAllowedOrigin(origin);
+                        cors.addAllowedOrigin(storeProperties.getSecurityAllowedOrigin());
                         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH"));
                         cors.setAllowCredentials(true);
                         cors.setAllowedHeaders(List.of("*"));
+                        cors.setExposedHeaders(List.of("Authorization"));
                         cors.setMaxAge(3600L);
                         return cors;
                     }
                 }
         ));
         http.logout(logout->
-                logout.deleteCookies("JSESSIONID","CSRF-TOKEN")
+                logout.deleteCookies("CSRF-TOKEN")
                         .logoutUrl("/api/auth/logout")
                         .invalidateHttpSession(true).permitAll()
                         .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
         );
 
-        http.requiresChannel(channel->channel.anyRequest().requiresSecure());
+       // http.requiresChannel(channel->channel.anyRequest().requiresSecure());
         //authentication
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(httpbasic->httpbasic.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));

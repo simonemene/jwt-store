@@ -1,5 +1,6 @@
 package com.store.security.store_security.service.impl;
 
+import com.store.security.store_security.annotation.LogExecutionTime;
 import com.store.security.store_security.dto.AllArticleOrderDto;
 import com.store.security.store_security.dto.AllOrderDto;
 import com.store.security.store_security.dto.ArticleDto;
@@ -44,6 +45,7 @@ public class OrderService implements IOrderService {
 
 	private final StockService stockService;
 
+	@LogExecutionTime
 	@Transactional
 	@Override
 	public ArticlesOrderDto orderArticles(ArticlesOrderDto articlesOrderDto)

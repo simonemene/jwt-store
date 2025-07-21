@@ -1,5 +1,6 @@
 package com.store.security.store_security.service.impl;
 
+import com.store.security.store_security.annotation.LogExecutionTime;
 import com.store.security.store_security.constants.RoleConstants;
 import com.store.security.store_security.dto.UserDto;
 import com.store.security.store_security.entity.AuthoritiesEntity;
@@ -30,6 +31,7 @@ public class RegistrationService implements IRegistrationService {
 
     private final AuthoritiesRepository authoritiesRepository;
 
+    @LogExecutionTime
     @Override
     public UserDto registrationUser(UserDto userDto) {
         log.info("registration {}", userDto.getUsername());

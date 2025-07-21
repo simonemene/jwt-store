@@ -6,9 +6,12 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+
 @SpringBootApplication
+@EnableAspectJAutoProxy
 @EnableMethodSecurity(jsr250Enabled = true,securedEnabled = true)
 @OpenAPIDefinition(
 		info = @Info(

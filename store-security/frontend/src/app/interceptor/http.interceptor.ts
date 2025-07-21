@@ -20,6 +20,13 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
   if(user.username && user.password)
   {
      httpHeaders = httpHeaders.append('Authorization','Basic ' + window.btoa(user.username + ":" + user.password));
+  }else
+  {
+     let authorization = sessionStorage.getItem('Authorization');
+     if(authorization)
+     {
+      httpHeaders = httpHeaders.append('Authorization',authorization);
+     }
   }
 
   let csrf = sessionStorage.getItem('XSRF-TOKEN');

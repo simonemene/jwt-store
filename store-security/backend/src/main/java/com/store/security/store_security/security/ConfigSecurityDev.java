@@ -3,7 +3,11 @@ package com.store.security.store_security.security;
 import com.store.security.store_security.exceptionhandle.CustomAccessDeniedHandler;
 import com.store.security.store_security.exceptionhandle.CustomAuthenticationEntryPoint;
 import com.store.security.store_security.filter.CsrfCustomFilter;
+import com.store.security.store_security.filter.JwtGeneratorFilter;
+import com.store.security.store_security.filter.JwtValidatorFilter;
+import com.store.security.store_security.properties.StoreProperties;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +18,6 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,11 +34,11 @@ import java.util.List;
 
 @Slf4j
 @Configuration
+@AllArgsConstructor
 @Profile("dev")
 public class ConfigSecurityDev {
 
-    @Value("${store.security.allowed-origin}")
-    private String origin;
+    private final StoreProperties storeProperties;
 
     /**
      * Bean responsible for customizable Spring Security configurations
@@ -78,17 +80,19 @@ public class ConfigSecurityDev {
                                        ).permitAll());
         //set custom filter
         http.addFilterAfter(new CsrfCustomFilter(), BasicAuthenticationFilter.class);
-        http.headers(AbstractHttpConfigurer::disable); //H2
+        http.addFilterAfter(new JwtGeneratorFilter(storeProperties),BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JwtValidatorFilter(storeProperties),BasicAuthenticationFilter.class);
         http.cors(cors->cors.configurationSource(
                 new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(
                             HttpServletRequest request) {
                         CorsConfiguration cors = new CorsConfiguration();
-                        cors.addAllowedOrigin(origin);
+                        cors.addAllowedOrigin(storeProperties.getSecurityAllowedOrigin());
                         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH"));
                         cors.setAllowCredentials(true);
                         cors.setAllowedHeaders(List.of("*"));
+                        cors.setExposedHeaders(List.of("Authorization"));
                         cors.setMaxAge(3600L);
                         return cors;
                     }

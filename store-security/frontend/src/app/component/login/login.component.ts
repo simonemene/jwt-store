@@ -43,6 +43,7 @@ export class LoginComponent {
         next:(responseData)=>
         {
           this.errorAuthentication=false;
+          window.sessionStorage.setItem('Authorization',responseData.headers.get('Authorization')!);
           this.user = <any> responseData.body;
           let csrf = getCookie("XSRF-TOKEN")!;          
           window.sessionStorage.setItem("XSRF-TOKEN",csrf);

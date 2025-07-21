@@ -23,6 +23,7 @@ export class LogoutComponent {
       {
         next:(expired:any)=>
         {
+          window.sessionStorage.setItem('Authorization',"");
           window.sessionStorage.clear();
           this.sessionsStorageAuth.logout();
         },

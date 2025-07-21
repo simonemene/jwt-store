@@ -1,26 +1,6 @@
 version: '3.8'
 
 services:
-  backend:
-    container_name: store-backend
-    build:
-      context: ./backend
-    image: store-backend:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-    depends_on:
-      - mysql
-
-  frontend:
-    container_name: store-frontend
-    build:
-      context: ./frontend
-    image: store-frontend:latest
-    ports:
-      - "4200:80"
-
   mysql:
     container_name: store-mysql
     image: mysql:8.0
@@ -32,6 +12,36 @@ services:
       MYSQL_DATABASE: basic-auth-store
     volumes:
       - db-data:/var/lib/mysql
+    networks:
+      - store-network
+
+  backend:
+    container_name: store-backend
+    build:
+      context: ./backend
+    image: store-backend:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - mysql
+    networks:
+      - store-network
+
+  frontend:
+    container_name: store-frontend
+    build:
+      context: ./frontend
+    image: store-frontend:latest
+    ports:
+      - "4200:80"
+    networks:
+      - store-network
 
 volumes:
   db-data:
+
+networks:
+  store-network:
+    driver: bridge

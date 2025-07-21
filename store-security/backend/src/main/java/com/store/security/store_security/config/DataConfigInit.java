@@ -29,12 +29,12 @@ public class DataConfigInit implements CommandLineRunner {
     public void run(String... args) throws Exception {
         AuthoritiesEntity authorities = new AuthoritiesEntity();
         authorities.setAuthority(RoleConstants.ADMIN.getRole());
-        authorities = authoritiesRepository.save(authorities);  // salva PRIMA
+        authorities = authoritiesRepository.save(authorities);
 
         UserEntity user = new UserEntity();
-        user.setUsername("admin@gmail.com");
+        user.setUsername("admin@example.it");
         user.setPassword(
-                "{bcrypt}$2a$12$jl2ifkyae8I/Tkg9OvnaK.rc.qkjX.N9CXrRkrOJmcW8BG5LAWJwq");
+                "{bcrypt}$2a$12$TbCpjrh02.ulo/tG.pT/6eYKz06hqJJDLCqzX8Xzdl3TzZM10cZgW");
         user.setAge(20);
         user.setTmstInsert(LocalDateTime.now());
         user.setAuthoritiesList(Set.of(authorities));
@@ -53,9 +53,9 @@ public class DataConfigInit implements CommandLineRunner {
         authoritiesTrack = authoritiesRepository.save(authoritiesTrack);
 
         UserEntity tracker = new UserEntity();
-        tracker.setUsername("tracker@gmail.com");
+        tracker.setUsername("track@example.it");
         tracker.setPassword(
-                "{bcrypt}$2a$12$jl2ifkyae8I/Tkg9OvnaK.rc.qkjX.N9CXrRkrOJmcW8BG5LAWJwq");
+                "{bcrypt}$2a$12$vEjmF.7P/Kwyk72m7h/wwe.ihKl1i0uH4FWy004Zo482obiNnBf7.");
         tracker.setAge(20);
         tracker.setTmstInsert(LocalDateTime.now());
         tracker.setAuthoritiesList(Set.of(authoritiesTrack));

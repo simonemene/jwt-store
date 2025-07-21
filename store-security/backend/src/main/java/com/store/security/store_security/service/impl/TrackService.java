@@ -1,5 +1,6 @@
 package com.store.security.store_security.service.impl;
 
+import com.store.security.store_security.annotation.LogExecutionTime;
 import com.store.security.store_security.dto.TrackDto;
 import com.store.security.store_security.entity.TrackEntity;
 import com.store.security.store_security.exceptions.TrackException;
@@ -27,6 +28,7 @@ public class TrackService implements ITrackService {
 		return trackMapper.toDto(trackEntity);
 	}
 
+	@LogExecutionTime
 	@Override
 	public TrackDto setTrack(Long idOrder,TrackDto trackDto) {
 		TrackEntity track = trackMapper.toEntity(trackDto);

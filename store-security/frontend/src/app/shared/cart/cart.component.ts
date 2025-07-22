@@ -67,6 +67,8 @@ export class CartComponent implements OnInit {
     this.authService.getUser().subscribe(
       {
         next: (username: UserDto) => {
+
+          
           user = username.username;
 
           //order

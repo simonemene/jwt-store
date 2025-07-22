@@ -81,7 +81,7 @@ public class ConfigSecurity {
                     public CorsConfiguration getCorsConfiguration(
                             HttpServletRequest request) {
                         CorsConfiguration cors = new CorsConfiguration();
-                        cors.addAllowedOrigin(storeProperties.getSecurityAllowedOrigin());
+                        cors.addAllowedOrigin(storeProperties.securityAllowedOrigin());
                         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH"));
                         cors.setAllowCredentials(true);
                         cors.setAllowedHeaders(List.of("*"));

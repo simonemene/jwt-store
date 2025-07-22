@@ -85,7 +85,7 @@ public class AuthenticationController {
         if(authentication.isAuthenticated())
         {
             try{
-                String secret = storeProperties.getJwtSecretKeyValue();
+                String secret = storeProperties.jwtSecretKeyValue();
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 jwt = Jwts.builder().issuer("store-security")
                         .subject("JWT Token")

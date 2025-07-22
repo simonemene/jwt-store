@@ -34,7 +34,7 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
         if(null != jwt)
         {
             try{
-            String secret = storeProperties.getJwtSecretKeyValue();
+            String secret = storeProperties.jwtSecretKeyValue();
             SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
             if(null != secretKey)
             {

@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
+@EnableConfigurationProperties(value = {StoreProperties.class})
 @EnableMethodSecurity(jsr250Enabled = true,securedEnabled = true)
 @OpenAPIDefinition(
 		info = @Info(

@@ -42,9 +42,7 @@ export class LoginComponent {
     this.auth.authentication(this.user).subscribe(
       {
         next:(responseData:LoginUserJwt)=>
-        {
-          console.log(responseData);
-          
+        {         
           this.errorAuthentication=false;
           window.sessionStorage.setItem('Authorization',responseData.jwt);
           this.sessionStorageAuth.login();
